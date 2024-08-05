@@ -8,7 +8,12 @@
       content="CodeBen is a JavaScript sandbox for learning and testing JavaScript."
     />
     <title>CodeBen - JavaScript Sandbox</title>
-    <link rel="stylesheet" href="styles.css" />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://unpkg.com/normalize.css@8.0.1/normalize.css"
+    />
+    <link rel="stylesheet" type="text/css" href="styles.css" />
     <link
       rel="stylesheet"
       type="text/css"
@@ -40,7 +45,7 @@
       const params = new URLSearchParams(window.location.hash.slice(1));
       const param0 = params.get('0');
 
-      Flems(root, {
+      const state = {
         ...Flems.defaults(),
         color: '#424242',
         theme: 'material',
@@ -55,7 +60,17 @@
         ...(param0
           ? JSON.parse(LZString.decompressFromEncodedURIComponent(param0))
           : {}),
-      });
+      };
+
+      const flems = Flems(root, state);
+      flems.getState = () => state;
+      flems.setState = updater => {
+        if (typeof updater === 'function' && updater.length === 1) {
+          Object.assign(state, updater(Object.assign({}, state)));
+        } else {
+          Object.assign(state, updater);
+        }
+      };
 
       // relabel existing tooltip
       const shareTooltip = [...document.querySelectorAll('div.tooltip')].find(
