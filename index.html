@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="CodeBen is a JavaScript sandbox for learning and testing JavaScript."
+    />
+    <title>CodeBen - JavaScript Sandbox</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css"
+    />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script
+      src="https://unpkg.com/lz-string@1.5.0"
+      type="text/javascript"
+      charset="utf-8"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/toastify-js"
+      type="text/javascript"
+    ></script>
+    <script src="flems.js" type="text/javascript" charset="utf-8"></script>
+    <script>
+      ['Flems', 'Toastify', 'LZString'].forEach(n => {
+        if (!window[n]) throw new Error(`Missing ${n}!`);
+      });
+
+      const root = document.getElementById('root');
+
+      // https://github.com/benjammin4dayz/flems/blob/e05575325e7863d3496010517c078e454597e6ff/src/actions.js#L85-L89
+      // https://github.com/benjammin4dayz/flems/blob/e05575325e7863d3496010517c078e454597e6ff/src/state.js#L91-L95
+      //
+      const params = new URLSearchParams(window.location.hash.slice(1));
+      const param0 = params.get('0');
+
+      Flems(root, {
+        ...Flems.defaults(),
+        color: '#424242',
+        theme: 'material',
+        files: [
+          { name: '.html', content: '' },
+          {
+            name: '.js',
+            content: 'console.log("Hello World!")',
+          },
+          { name: '.css', content: '* { background-color: #777; }' },
+        ],
+        ...(param0
+          ? JSON.parse(LZString.decompressFromEncodedURIComponent(param0))
+          : {}),
+      });
+
+      // relabel existing tooltip
+      const shareTooltip = [...document.querySelectorAll('div.tooltip')].find(
+        el => el.textContent === 'Open / share on flems.io'
+      );
+      if (!shareTooltip) throw new Error('Missing share tooltip element!');
+      shareTooltip.innerText = 'Copy Link to Clipboard';
+
+      // repurpose share button
+      const shareButton = document.querySelector(`a[href*='https://flems.io']`);
+      if (!shareButton) throw new Error('Missing share button element!');
+      shareButton.onclick = e => {
+        // do not open a new window or navigate to flems.io
+        e.preventDefault();
+
+        // capture encoded params from href
+        const params = shareButton.href.split('/')[3];
+        const link = window.location.origin + params;
+
+        // copy link to clipboard and add params to the url hash
+        navigator.clipboard.writeText(link);
+        window.history.replaceState({}, document.title, link);
+
+        // great success!
+        Toastify({
+          text: 'Copied!',
+          duration: 2000,
+          close: false,
+          gravity: 'top', // `top` or `bottom`
+          position: 'right', // `left`, `center` or `right`
+          stopOnFocus: false, // Prevents dismissing of toast on hover
+          style: {
+            background: 'linear-gradient(to right, #66bb6a, #43a047)',
+          },
+          offset: {
+            x: 20,
+            y: 50,
+          },
+        }).showToast();
+      };
+    </script>
+  </body>
+</html>

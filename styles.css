@@ -1,0 +1,59 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+:root {
+  --d0: #333;
+  --d1: #444;
+  --d2: #555;
+  --d3: #666;
+  --d4: #777;
+
+  --text-primary: #fff;
+}
+#root {
+  width: 100vw;
+  height: 100vh;
+}
+
+.tabs,
+.toolbar,
+.console,
+.logLine,
+.tooltip {
+  background-color: var(--d0) !important;
+  color: var(--text-primary) !important;
+}
+
+#input {
+  background-color: var(--d1) !important;
+  color: var(--text-primary) !important;
+}
+
+label {
+  color: lightgreen !important;
+}
+
+.CodeMirror-vscrollbar,
+.CodeMirror-hscrollbar {
+  /* scrollbar-width: thin; */
+  scrollbar-color: var(--d3) var(--d1);
+
+  &::-webkit-scrollbar {
+    width: 11px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: var(--d1);
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: var(--d3);
+    border-radius: 6px;
+    border: 3px solid var(--d1);
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background-color: var(--d4);
+  }
+}
